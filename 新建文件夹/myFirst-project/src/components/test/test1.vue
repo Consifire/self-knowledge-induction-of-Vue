@@ -1,101 +1,163 @@
 <template>
-    <div class="test1">
-      <h2>过滤器、属性计算、侦听器、生命周期钩子函数</h2>
-      <button @click="$router.go(-1)">返回HelloWorld页面</button>
-       <p>
-         <router-link :to="{name:'test3',params:{age:18}}">使用params方式带参跳转到test3</router-link>
-       </p>
+  <div class="test1">
+    <h2>这是test1页面</h2>
+    <h2>过滤器、属性计算、侦听器、路由跳转、路由传参</h2>
+    <button @click="$router.go(-1)">返回上一个页面</button>
+    <button @click="$router.push('test2')">跳转至test2页面</button>
+    <!-- 过滤器filters -->
+    <div class="exampleContainer">
+      <p class="minTitle">过滤器filters------------</p>
+      <p>过滤器输入值：<input type="number" v-model.number="filterVal"></p>
+      <p>{{filterVal | filter1}}</p>
+    </div>
+    <!-- 数据绑定 -->
+    <div class="exampleContainer">
+      <p class="minTitle">数据绑定v-model:</p>
+      <span>input-属性msg-：</span>
+      <input v-model="msg" />
+      <p>属性msg：{{msg}}</p>
+    </div>
+    <!-- 计算属性 -->
+    <div class="exampleContainer">
+      <p class="minTitle">计算属性computed:</p>
+      <p>
+        属性attrA：<input type="text" v-model="attrA">
+      </p>
+      <p>
+        属性attrB：<input type="text" v-model="attrB">
+      </p>
+      <p>
+        计算属性attrC：
+        <span class="addBorder">{{attrC}}</span>
+
+      </p>
+    </div>
+    <!-- 侦听器 -->
+    <div class="exampleContainer">
+      <p class="minTitle">侦听器watch:</p>
+      <p>
+        改变watchA<input type="text" v-model="watchA">
+      </p>
+      <p>
+        watchA:变化前的值：{{watchANoChange}}
+      </p>
+      <p>
+        变化后的值：{{watchAChanged}}
+      </p>
       
+    </div>  
+    <p>msgComputed：{{msgComputed}}</p>
+
+    <p>直接在html中计算：{{msg.split('').reverse().join('')}}</p>
+    <p>侦听msg变化，变化前：{{oldMsg}}---变化后（当前值）：{{nowMsg}}</p>
+
+    <p>计算属性nowMsgComputed --getter：{{nowMsgComputed}}</p>
+    <p>计算属性nowMsgComputed --setter：{{setter}}</p>
+    <input type="text" v-model="nowMsgComputed">
+    <div>
+      <button @click="clickToChangeSetter">clickToChangeSetter</button>
+    </div>
+    <div class="exampleContainer">
+      <p class="minTitle">路由跳转方式：</p>
+      <p>
+        1、使用'<'router-link'><'/router-link'>'标签<br>
+        <router-link :to="{path:'/test/test2'}">跳转到test2页面</router-link>
+      </p>
+      <p>
+        2、js改变vue.$router<br>
+        <button @click="$router.push('/home')">跳转至helloworld页面</button>
+      </p>
+      <p class="minTitle">路由跳转带参方式：</p>
+      <p>
+        <router-link :to="{name:'test3',params:{age:18}}">使用params方式带参跳转到test3</router-link>
+      </p>
+
       <router-link :to="{name:'test3',query:{age:18}}">使用query方式带参跳转到test3</router-link>
       <p>HelloWorld跳转带过来的参数pageName：{{this.$route.query.pageName}}</p>
-       <div>
-          <span>input数据绑定-msg-：</span>
-          <input v-model="msg"/>
-        </div>
-        <p>属性msg：{{msg}}</p>
-        <p>计算属性msgComputed：{{msgComputed}}</p>
-        
-
-        <p>直接在html中计算：{{msg.split('').reverse().join('')}}</p>
-        <p>侦听msg变化，变化前：{{oldMsg}}---变化后（当前值）：{{nowMsg}}</p>
-
-        <p>计算属性nowMsgComputed --getter：{{nowMsgComputed}}</p>
-        <p>计算属性nowMsgComputed --setter：{{setter}}</p>
-        <input type="text" v-model="nowMsgComputed">
-        <div>
-          <button @click="clickToChangeSetter">clickToChangeSetter</button>
-        </div>
-        <p>过滤器filters------------</p>
-        <p>过滤器输入值：<input type="number" v-model.number="filterVal" ></p>
-        <p>{{filterVal | filter1}}</p>
     </div>
+
+  </div>
 </template>
 <script>
 export default {
-  name: 'test1',
-  data () {
-    return {
-      msg: '我是你大打野',
-      oldMsg:'',
-      nowMsg:'',
-      setter:'',
-      filterVal:''
-    }
-  },
-  //过滤器
-  filters:{
-    filter1:function(value){
-      if(!value) return ''
-      if(value>5) return '大于五'
-      if(value==5) return '等于五'
-      else return '小于五'
+    name: "test1",
+    data() {
+        return {
+            msg: "我是你大打野",
+            oldMsg: "",
+            nowMsg: "",
+            setter: "",
+            filterVal: "",
+            attrA: 0,
+            attrB: 0,
+            watchA:'我是watchA',
+            watchANoChange:'',
+            watchAChanged:''
+        };
     },
-    filter2:function(value){
-      return ''
+    //过滤器---定义过滤规则，多处使用
+    filters: {
+        filter1: function(value) {
+            if (!value) return "";
+            if (value > 5) return "大于五";
+            if (value == 5) return "等于五";
+            else return "小于五";
+        },
+        filter2: function(value) {
+            return "";
+        },
+        filter3: function(value) {
+            return "";
+        }
     },
-    filter3:function(value){
-      return ''
-    }
-  },
-  //计算属性
-  computed:{
-    //计算属性默认只有 getter（一般省略不写） ，不过在需要时你也可以提供一个 setter ：
-    //声明计算属性:function(){}  或者 声明计算属性:{ get:function(){},set:function(newValue){} }
-    //计算属性是基于它们的依赖进行缓存的。计算属性只有在它的相关依赖发生改变时才会重新求值
-    msgComputed:function() {
-      // `this` 指向 vue 实例对象
-      // return '计算属性值哈哈哈'
-      return this.msg.split('').reverse().join('')//msg更新时msgComputed也会更新
+    //计算属性
+    computed: {
+        //计算属性默认只有 getter（一般省略不写） ，不过在需要时你也可以提供一个 setter ：
+        //声明计算属性:function(){}  或者 声明计算属性:{ get:function(){},set:function(newValue){} }
+        //计算属性是基于它们的依赖进行缓存的。计算属性只有在它的相关依赖发生改变时才会重新求值
+        msgComputed: function() {
+            // `this` 指向 vue 实例对象
+            // return '计算属性值哈哈哈'
+            return this.msg.split("").reverse().join(""); //msg更新时msgComputed也会更新
+        },
+        // 现在再运行 this.nowMsgComputed = '新的值' 时，setter 会被调用,执行顺序setter -> getter -> updated
+        // 并不是触发了setter也就会触发getter，他们两个是相互独立的，
+        nowMsgComputed: {
+            // getter
+            get: function() {
+                console.log("触发getter");
+                return this.msg + "add"; //只有当this.msg变化时才会触发getter
+            },
+            // setter ---只有当this.nowMsgComputed 变化时才会触发setter，相关依赖（this.msg）发生改变时重新求值不会触发setter
+            set: function(newValue) {
+                console.log("触发setter");
+
+                var setterVal = newValue.split("");
+                this.setter = setterVal[setterVal.length - 1];
+            }
+        },
+        attrC() {
+            return parseInt(this.attrA) + parseInt(this.attrB);
+        }
     },
-    // 现在再运行 this.nowMsgComputed = '新的值' 时，setter 会被调用,执行顺序setter -> getter -> updated
-    // 并不是触发了setter也就会触发getter，他们两个是相互独立的，
-    nowMsgComputed:{
-      // getter
-      get: function () {
-        console.log('触发getter');
-        return this.msg + 'add' ; //只有当this.msg变化时才会触发getter  
-      },
-      // setter ---只有当this.nowMsgComputed 变化时才会触发setter，相关依赖（this.msg）发生改变时重新求值不会触发setter
-      set: function (newValue) {
-        var setterVal = newValue.split("");
-        this.setter = setterVal[setterVal.length-1];
-      }
-    }
-  },
-  //侦听器，监听数据变化,变化时触发一个fn
-  watch:{
-    //val 改变后的值，即当前值
-    //oldVal 改变前的值
-    msg:function(val,oldVal){
-      console.log(val,oldVal);
-      this.oldMsg = oldVal;
-      this.nowMsg = val;
-      this.nowMsgComputed = oldVal;
-    }
-    //要防止watch滥用，比如A + B = C，不必要分别侦听A、B变化来重新计算C,只需要 使用计算属性 computed 声明 C,减少重复代码
-    //当需要在数据变化时执行异步请求或开销较大的操作时，最好使用watch自定义侦听。
-  },
-  /******
+    //侦听器，监听数据变化,变化时触发一个fn
+    watch: {
+        //val 改变后的值，即当前值
+        //oldVal 改变前的值
+        msg: function(val, oldVal) {
+            console.log(val, oldVal);
+            this.oldMsg = oldVal;
+            this.nowMsg = val;
+            this.nowMsgComputed = oldVal;
+        },
+        //要防止watch滥用，比如A + B = C，不必要分别侦听A、B变化来重新计算C,只需要 使用计算属性 computed 声明 C,减少重复代码
+        //当需要在数据变化时执行异步请求或开销较大的操作时，最好使用watch自定义侦听。
+        watchA:function(val,oldVal){
+          this.watchANoChange = oldVal;
+          this.watchAChanged = val;
+        }
+    },
+    /******
   常用指令：
   v-text  --  更新元素的 textContent   用法: <span v-text="msg"></span>  和  <span>{{msg}}</span>  效果一样
   
@@ -134,74 +196,30 @@ export default {
   v-cloak --  这个指令保持在元素上直到关联实例结束编译，配合[v-cloak]{display:none}隐藏未编译的标签直到实例准备完毕。编译完显示
   v-once  --  只渲染元素和组件一次。随后的重新渲染，元素/组件及其所有的子节点将被视为静态内容并跳过。这可以用于优化更新性能。
    *******************/
-  beforeCreate:function(){
-    console.log('beforeCreate')
-  },
-  //在beforeCreate和created之间，进行数据观测(data observer) ，也就是在这个时候开始监控data中的数据变化了，同时初始化事件
-  created:function(){
-    console.log('created')
 
-  },
-  /*** created 到  beforeMount 之间 */
-
-  //首先系统会判断对象中有没有el选项
-  //有el选项，则继续编译过程
-  //没有el选项，则停止编译，也意味着暂时停止了生命周期，直到手动执行vm.$mount(el),添加el
-
-  // 1.如果Vue实例对象中有template参数选项，则将其作为模板编译成render函数
-  // 2.如果没有template参数选项，则将外部的HTML作为模板编译（template），也就是说，template参数选项的优先级要比外部的HTML高
-  // 3.如果1,2条件都不具备，则报错
-  beforeMount:function(){
-    console.log('beforeMount')
-
-  },
-  mounted:function(){
-    console.log('mounted')
-
-  },
-  beforeUpdate:function(){
-    console.log('beforeUpdate')
-
-  },
-  updated:function(){
-    console.log('updated')
-    console.log("1==我会先执行");
-    //DOM 还没更新
-    this.$nextTick(function(){
-        //DOM 更新了,DOM更新完即会调用
-        //在下次 DOM 更新循环结束之后执行这个回调。在修改数据之后立即使用这个方法，获取更新后的DOM.
-        console.log("3==我只能等页面渲染完了才会立即执行");
-    })
-    console.log("2==我虽然在最后但会比$nextTick先执行")
-
-  },
-  beforeDestroy:function(){
-    console.log('beforeDestroy')
-
-  },
-  destroyed:function(){
-    console.log('destroyed')
-
-  },
-  activated:function(){
-    console.log('activated')
-
-  },
-  deactivated:function(){
-    console.log('deactivated')
-
-  },
-  methods:{
-    clickToChangeSetter:function(){
-      this.nowMsgComputed = 'nowMsgComputed被methods改变,set:会触发'
+    methods: {
+        clickToChangeSetter: function() {
+            this.nowMsgComputed = "nowMsgComputed被methods改变,set:会触发";
+        }
     }
-  }
-
-}
+};
 </script>
-<style scoped>
-  .test1{
+<style>
+.test1 {
     text-align: left;
-  }
+}
+.exampleContainer {
+    padding: 1rem 0;
+}
+.minTitle {
+    color: red;
+    font-weight: 600;
+    font-size: 16px;
+}
+.addBorder {
+    border: 1px solid #cccccc;
+    display: inline;
+    padding: 2px 5px;
+}
 </style>
 

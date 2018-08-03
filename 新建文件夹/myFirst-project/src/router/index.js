@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
+//绝对路径，@已经在配置文件中重写了路径。
 import test1 from '@/components/test/test1'
+//相对路径
 import test2 from '../components/test/test2'
 
 // import test3 from '../components/test/test3'
